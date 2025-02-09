@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluir Usuário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Excluir Usuário</h2>
+    <p>Tem certeza que deseja excluir <strong id="user-name"></strong>?</p>
+    
+    <button id="confirm-delete">Sim, excluir</button>
+    <a href="/users.html">Cancelar</a>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+
+        async function loadUserData() {
+            const response = await fetch(`/api/user/${userId}`);
+            const user = await response.json();
+            document.getElementById('user-name').textContent = user.name;
+        }
+
+        document.getElementById('confirm-delete').addEventListener('click', async () => {
+            await fetch(`/api/delete-user/${userId}`, { method: 'DELETE' });
+            alert('Usuário excluído!');
+            window.location.href = "/users.html";
+        });
+
+        loadUserData();
+    </script>
+</body>
+</html>

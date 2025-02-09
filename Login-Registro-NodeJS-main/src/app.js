@@ -42,15 +42,13 @@ app.get("/dev", (req, res) => {
 
 // Define a rota para o processamento do formulário de login
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    const validacao = await registroController.verificaUsuario(username, password);
+    const user = await User.findOne({ email: req.body.email });
 
-    if (validacao.bool) {
-        // Retorna a mensagem de sucesso para o usuário
-        res.send('Login efetuado com sucesso!');
+    if (user) {
+        req.session.user = user;
+        return res.redirect('/users'); // Agora redireciona para a lista de usuários
     } else {
-        // Retorna uma mensagem de erro para o usuário
-        res.status(401).send(validacao.message);
+        return res.redirect('/login');
     }
 });
 
@@ -72,6 +70,70 @@ app.post('/register', async (req, res) => {
         res.status(500).send('<h1>Algo errado não esta certo</h1>');
     }   
 
+});
+
+app.get('/users', async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login'); // Garante que apenas usuários logados vejam a lista
+    }
+    const users = await User.find(); // Pega todos os usuários do banco
+    res.render('users', { users });
+});
+
+app.get('/edit-user/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    
+    const user = await User.findById(req.params.id);
+    if (!user) return res.redirect('/users');
+
+    res.render('edit-user', { user });
+});
+
+app.post('/edit-user/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+
+    await User.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect('/users');
+});
+
+app.get('/delete-user/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.redirect('/users');
+
+    res.render('delete-user', { user });
+});
+
+app.post('/delete-user/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+
+    await User.findByIdAndDelete(req.params.id);
+    res.redirect('/users');
+});
+
+// Listar usuários (API)
+app.get('/api/users', async (req, res) => {
+    const users = await User.find();
+    res.json(users);
+});
+
+// Buscar usuário específico (API)
+app.get('/api/user/:id', async (req, res) => {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+});
+
+// Editar usuário (API)
+app.put('/api/edit-user/:id', async (req, res) => {
+    await User.findByIdAndUpdate(req.params.id, req.body);
+    res.json({ message: "Usuário atualizado!" });
+});
+
+// Excluir usuário (API)
+app.delete('/api/delete-user/:id', async (req, res) => {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "Usuário excluído!" });
 });
 
 // Exporta a instância do servidor

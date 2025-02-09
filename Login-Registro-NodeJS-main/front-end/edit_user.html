@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Editar Usuário</h2>
+    <form id="edit-form">
+        <input type="hidden" id="user-id">
+        
+        <label>Nome:</label>
+        <input type="text" id="user-name" required>
+
+        <label>Email:</label>
+        <input type="email" id="user-email" required>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+
+        async function loadUserData() {
+            const response = await fetch(`/api/user/${userId}`);
+            const user = await response.json();
+            document.getElementById('user-id').value = user._id;
+            document.getElementById('user-name').value = user.name;
+            document.getElementById('user-email').value = user.email;
+        }
+
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const updatedUser = {
+                name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value
+            };
+            await fetch(`/api/edit-user/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedUser)
+            });
+            alert('Usuário atualizado!');
+            window.location.href = "/users.html";
+        });
+
+        loadUserData();
+    </script>
+</body>
+</html>
