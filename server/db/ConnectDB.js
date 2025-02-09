@@ -1,39 +1,45 @@
-//importing the mysql2/promise for using async await in conenction function and in querys
 const mysql = require("mysql2/promise");
 
-//the async await function which connects to the database using the credentials in the .env files
 const ConnectDB = async () => {
+  // Conectar ao banco sem especificar um database
   const pool = await mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    waitForConnections: process.env.DB_WAITFORCONNECTIONS,
-    connectionLimit: process.env.DB_CONNECTIONLIMIT,
-    queueLimit: process.env.DB_QUEUELIMIT
+    waitForConnections: process.env.DB_WAITFORCONNECTIONS === "true",
+    connectionLimit: parseInt(process.env.DB_CONNECTIONLIMIT, 10),
+    queueLimit: parseInt(process.env.DB_QUEUELIMIT, 10),
   });
 
-  // async await query which creates the database if it doesn't exist
+  // Criar o banco de dados se não existir
   await pool.query(
     `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_DATABASE}\``
   );
-  console.log(`Database ${process.env.DB_DATABASE} created or already exists.`);
+  console.log(`Banco de dados ${process.env.DB_DATABASE} criado ou já existe.`);
 
-  // async await query which changes to the pool's database to the newly created database
-  await pool.query(`USE \`${process.env.DB_DATABASE}\``);
-  console.log(`Switched to database ${process.env.DB_DATABASE}`);
+  // Criar um novo pool apontando para o banco de dados recém-criado
+  const dbPool = await mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    waitForConnections: process.env.DB_WAITFORCONNECTIONS === "true",
+    connectionLimit: parseInt(process.env.DB_CONNECTIONLIMIT, 10),
+    queueLimit: parseInt(process.env.DB_QUEUELIMIT, 10),
+  });
 
-  // async await query which creates the 'users' table if it doesn't exist and creates table for id, name, email
-  await pool.query(`CREATE TABLE IF NOT EXISTS \`${process.env.DB_TABLENAME}\` (
+  // Criar a tabela se não existir
+  await dbPool.query(`
+    CREATE TABLE IF NOT EXISTS \`${process.env.DB_TABLENAME}\` (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(50) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`);
-  console.log(`${process.env.DB_TABLENAME} table created or already exists.`);
-  // returning pool to further add querys in the database we did till now
-  return pool;
+    )
+  `);
+  console.log(`Tabela ${process.env.DB_TABLENAME} criada ou já existe.`);
+
+  return dbPool;
 };
 
-//exporting the function
 module.exports = ConnectDB;
