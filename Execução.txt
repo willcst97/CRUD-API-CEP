@@ -1,3 +1,7 @@
+Algumas variáveis do ambiente estão definidas no arquivo .env como nome do banco, porta que o servidor vai utilizar e etc
+
+package.json é o arquivo onde vai ficar as configurações do teu projeto
+
 'npm start' na pasta server
 'npm run dev' na pasta frontend
 
@@ -16,4 +20,3 @@ VALUES ('Carlos Oliveira', 'carlos.oliveira@example.com', '40020000', 'Avenida S
 
 INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
 VALUES ('Fernanda Costa', 'fernanda.costa@example.com', '80010000', 'Rua XV de Novembro', 'Centro', 'Curitiba', 'PR', '1213');
- 
