@@ -50,7 +50,7 @@ function Table() {
           <table className="table table-bordered table-hover">
             <thead className="thead-dark">
               <tr>
-                <th>Id</th>
+                <th>ID</th>
                 <th>Nome</th>
                 <th>Email</th>
                 <th>CEP</th>

@@ -109,7 +109,7 @@ function CreateUserModal({ addUser }) {
                 <input type="text" className="form-control" id="estado" placeholder="Ex: SP" value={estado} onChange={handleEstadoChange} />
               </div>
               <div className="mb-3">
-                <label htmlFor="numero" className="form-label">Número:</label>
+                <label htmlFor="numero" className="form-label">Número (+ Complemento se houver):</label>
                 <input type="text" className="form-control" id="numero" placeholder="Ex: 123" value={numero} onChange={handleNumeroChange} />
               </div>
             </div>

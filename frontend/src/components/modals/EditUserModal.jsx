@@ -13,7 +13,30 @@ function EditUserModal() {
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
 
-  const handleIdChange = (event) => setId(event.target.value);
+  const handleIdChange = async (event) => {
+    const userId = event.target.value;
+    setId(userId);
+
+    if (userId) {
+      try {
+        const res = await axios.get(`http://localhost:3000/${userId}`);
+        const userData = res.data;
+        if (userData) {
+          setName(userData.name);
+          setEmail(userData.email);
+          setCep(userData.cep);
+          setLogradouro(userData.logradouro);
+          setBairro(userData.bairro);
+          setCidade(userData.cidade);
+          setEstado(userData.estado);
+          setNumero(userData.numero);
+        }
+      } catch (error) {
+        toast.error("Erro ao buscar dados do usuário");
+      }
+    }
+  };
+
   const handleNameChange = (event) => setName(event.target.value);
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handleCepChange = async (event) => {
@@ -81,12 +104,12 @@ function EditUserModal() {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="EditUserModal"><b>Digite o ID, Nome e Email</b></h1>
+              <h1 className="modal-title fs-5" id="EditUserModal"><b>Digite o ID e modifique os dados necessários</b></h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div className="modal-body">
               <div className="mb-3">
-                <label htmlFor="id" className="form-label">Id:</label>
+                <label htmlFor="id" className="form-label">ID:</label>
                 <input type="text" className="form-control" id="id" placeholder="Ex: 12" value={id} onChange={handleIdChange} />
               </div>
               <div className="mb-3">
@@ -118,7 +141,7 @@ function EditUserModal() {
                 <input type="text" className="form-control" id="estado" placeholder="Ex: SP" value={estado} onChange={handleEstadoChange} />
               </div>
               <div className="mb-3">
-                <label htmlFor="numero" className="form-label">Número:</label>
+                <label htmlFor="numero" className="form-label">Número (+ Complemento se houver):</label>
                 <input type="text" className="form-control" id="numero" placeholder="Ex: 123" value={numero} onChange={handleNumeroChange} />
               </div>
             </div>

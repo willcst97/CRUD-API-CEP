@@ -11,6 +11,19 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [results] = await req.pool.query(`SELECT * FROM ${process.env.DB_TABLENAME} WHERE id = ?`, [id]);
+        if (results.length === 0) return res.status(404).send("Usuário não encontrado");
+        res.json(results[0]);
+    } catch (error) {
+        console.error("Erro ao buscar dados do usuário:", error);
+        res.status(500).send("Erro interno do servidor");
+    }
+});
+
 router.post("/", async (req, res) => {
     const { name, email, cep, logradouro, bairro, cidade, estado, numero } = req.body;
     if (!name || !email || !cep || !logradouro || !bairro || !cidade || !estado || !numero)
