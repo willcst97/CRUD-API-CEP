@@ -5,7 +5,7 @@ package.json é o arquivo onde vai ficar as configurações do teu projeto
 'npm start' na pasta server
 'npm run dev' na pasta frontend
 
-schema para popular banco de dados:
+schema para popular o banco de dados:
 INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
 VALUES ('Maria Silva', 'maria.silva@example.com', '01001000', 'Praça da Sé', 'Sé', 'São Paulo', 'SP', '123');
 
