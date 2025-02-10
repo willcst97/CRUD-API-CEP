@@ -4,7 +4,7 @@
 https://github.com/mushfiqurniazzz/Mysql-CRUD-Operations-With-Nodejs-And-Reactjs/assets/148959859/c0adf4d1-336c-4ee1-b28b-c5528eb481d0
 
 
-<p>Este aplicativo permite que os usuários salvem usuários com nome e email com um ID específico para cada um, apresentando funcionalidades como criar, ler, atualizar e deletar. Ele usa MySQL como banco de dados para armazenar os usuários, Express.jspara lidar com a lógica do lado do servidor, React.jspara construir a interface do usuário e Node.jscomo ambiente de execução do lado do servidor. O aplicativo oferece uma experiência contínua para os usuários economizarem tempo e esforços.</p> <h3>Executando o Projeto Localmente</h3> <p>Para executar este projeto em sua máquina local, siga estes passos:
+<p>Este aplicativo permite que os usuários salvem usuários com nome e email com um ID específico para cada um, apresentando funcionalidades como criar, ler, atualizar e deletar. Ele usa MySQL como banco de dados para armazenar os usuários, Express.jspara lidar com a lógica do lado do servidor, React.jspara construir a interface do usuário e Node.jscomo ambiente de execução do lado do servidor. Além disso, possui integração com a API de CEP para preenchimento automático de dados de endereço. O aplicativo oferece uma experiência contínua para os usuários economizarem tempo e esforços.</p> <h3>Executando o Projeto Localmente</h3> <p>Para executar este projeto em sua máquina local, siga estes passos:
 
 <b>Clone o Repositório</b>: Clone este repositório para sua máquina local:
 
