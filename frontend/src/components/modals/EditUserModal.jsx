@@ -1,147 +1,129 @@
-// importando bibliotecas necessárias para este modal, que editará usuários no banco de dados e será usado como um componente funcional para a tabela
 import { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 
-// início do componente funcional que edita o usuário no banco de dados
 function EditUserModal() {
-  // usando variáveis de estado para acessar os campos de entrada
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [cep, setCep] = useState("");
+  const [logradouro, setLogradouro] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
+  const [numero, setNumero] = useState("");
 
-  // função para mudança dinâmica dos valores dos campos de entrada do campo id
-  const handleIdChange = (event) => {
-    setId(event.target.value);
+  const handleIdChange = (event) => setId(event.target.value);
+  const handleNameChange = (event) => setName(event.target.value);
+  const handleEmailChange = (event) => setEmail(event.target.value);
+  const handleCepChange = async (event) => {
+    const newCep = event.target.value;
+    setCep(newCep);
+
+    if (newCep.length === 8) {
+      try {
+        const res = await axios.get(`https://viacep.com.br/ws/${newCep}/json/`);
+        setLogradouro(res.data.logradouro);
+        setBairro(res.data.bairro);
+        setCidade(res.data.localidade);
+        setEstado(res.data.uf);
+        document.getElementById("numero").focus();
+      } catch (error) {
+        toast.error("Erro ao buscar endereço");
+      }
+    }
   };
+  const handleLogradouroChange = (event) => setLogradouro(event.target.value);
+  const handleBairroChange = (event) => setBairro(event.target.value);
+  const handleCidadeChange = (event) => setCidade(event.target.value);
+  const handleEstadoChange = (event) => setEstado(event.target.value);
+  const handleNumeroChange = (event) => setNumero(event.target.value);
 
-  // função para mudança dinâmica dos valores dos campos de entrada do campo nome
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  // função para mudança dinâmica dos valores dos campos de entrada do campo email
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  // criação de uma função assíncrona que primeiro verifica se todas as entradas estão preenchidas, envia uma solicitação post ao servidor usando axios e depois mostra uma mensagem toast se for bem-sucedida ou não
   const handleEditUser = async () => {
-    // verificação de entrada
-    if (!id || !name || !email || id === "" || name === "" || email === "") {
+    if (!id || !name || !email || !cep || !logradouro || !bairro || !cidade || !estado || !numero) {
       toast.error("Todos os campos são obrigatórios");
       return;
     }
     try {
-      // solicitação put ao servidor
       const res = await axios.put(`http://localhost:3000`, {
-        id,
-        name,
-        email
+        id, name, email, cep, logradouro, bairro, cidade, estado, numero
       });
 
-      // em caso de sucesso
       if (res.status === 200) {
         toast.success("Usuário editado || Recarregando para atualizar");
-        setId(""); // esvazia os campos após a operação bem-sucedida
-        setName(""); // esvazia os campos após a operação bem-sucedida
-        setEmail(""); // esvazia os campos após a operação bem-sucedida
+        setId("");
+        setName("");
+        setEmail("");
+        setCep("");
+        setLogradouro("");
+        setBairro("");
+        setCidade("");
+        setEstado("");
+        setNumero("");
 
-        // após 3 segundos, recarrega a página para os usuários visualizarem a edição
         setTimeout(() => {
           location.reload();
         }, 3000);
-
       }
     } catch (error) {
-      // em caso de erro
       console.error("Erro ao editar usuário", error);
       toast.error("Erro ao editar usuário");
     }
   };
-// usando componentes pré-construídos do Bootstrap
+
   return (
     <>
-      <button
-        type="button"
-        className="btn btn-warning"
-        data-bs-toggle="modal"
-        id="button"
-        data-bs-target="#editUserModal"
-      >
+      <button type="button" className="btn btn-warning" data-bs-toggle="modal" id="button" data-bs-target="#editUserModal">
         <b>Editar Usuário</b>
       </button>
 
-      <div
-        className="modal fade"
-        id="editUserModal"
-        tabIndex="-1"
-        aria-labelledby="EditUserModal"
-        aria-hidden="true"
-      >
+      <div className="modal fade" id="editUserModal" tabIndex="-1" aria-labelledby="EditUserModal" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="EditUserModal">
-                <b>Digite o ID, Nome e Email</b>
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Fechar"
-              ></button>
+              <h1 className="modal-title fs-5" id="EditUserModal"><b>Digite o ID, Nome e Email</b></h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div className="modal-body">
               <div className="mb-3">
-                <label htmlFor="id" className="form-label">
-                  ID:
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="id"
-                  placeholder="Ex: 1"
-                  value={id}
-                  onChange={handleIdChange}
-                />
+                <label htmlFor="id" className="form-label">Id:</label>
+                <input type="text" className="form-control" id="id" placeholder="Ex: 12" value={id} onChange={handleIdChange} />
               </div>
               <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                  Novo Nome:
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  placeholder="Ex: João Carlos"
-                  value={name}
-                  onChange={handleNameChange}
-                />
+                <label htmlFor="name" className="form-label">Novo Nome:</label>
+                <input type="text" className="form-control" id="name" placeholder="Ex: João Grilo" value={name} onChange={handleNameChange} />
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Novo Email:
-                </label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  placeholder="Ex: joao@gmail.com"
-                  value={email}
-                  onChange={handleEmailChange}
-                />
+                <label htmlFor="email" className="form-label">Novo Email:</label>
+                <input type="email" className="form-control" id="email" placeholder="Ex: jao@gmail.com" value={email} onChange={handleEmailChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="cep" className="form-label">CEP:</label>
+                <input type="text" className="form-control" id="cep" placeholder="Ex: 12345678" value={cep} onChange={handleCepChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="logradouro" className="form-label">Logradouro:</label>
+                <input type="text" className="form-control" id="logradouro" placeholder="Ex: Rua das Flores" value={logradouro} onChange={handleLogradouroChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="bairro" className="form-label">Bairro:</label>
+                <input type="text" className="form-control" id="bairro" placeholder="Ex: Centro" value={bairro} onChange={handleBairroChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="cidade" className="form-label">Cidade:</label>
+                <input type="text" className="form-control" id="cidade" placeholder="Ex: São Paulo" value={cidade} onChange={handleCidadeChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="estado" className="form-label">Estado:</label>
+                <input type="text" className="form-control" id="estado" placeholder="Ex: SP" value={estado} onChange={handleEstadoChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="numero" className="form-label">Número:</label>
+                <input type="text" className="form-control" id="numero" placeholder="Ex: 123" value={numero} onChange={handleNumeroChange} />
               </div>
             </div>
             <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-warning"
-                onClick={handleEditUser}
-                data-bs-dismiss="modal"
-              >
-                <b>Editar Usuário</b>
-              </button>
+              <button type="button" className="btn btn-warning" onClick={handleEditUser} data-bs-dismiss="modal"><b>Editar Usuário</b></button>
             </div>
           </div>
         </div>
@@ -150,5 +132,4 @@ function EditUserModal() {
   );
 }
 
-// exportando a função criada
 export default EditUserModal;

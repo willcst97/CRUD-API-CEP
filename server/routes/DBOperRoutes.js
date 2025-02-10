@@ -12,8 +12,9 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    const { name, email } = req.body;
-    if (!name || !email) return res.status(400).send("Todos os campos são obrigatórios");
+    const { name, email, cep, logradouro, bairro, cidade, estado, numero } = req.body;
+    if (!name || !email || !cep || !logradouro || !bairro || !cidade || !estado || !numero)
+        return res.status(400).send("Todos os campos são obrigatórios");
 
     try {
         const [[{ count }]] = await req.pool.query(
@@ -22,9 +23,10 @@ router.post("/", async (req, res) => {
         if (count > 0) return res.status(409).send("Usuário já existe");
 
         const [insertResults] = await req.pool.query(
-            `INSERT INTO ${process.env.DB_TABLENAME} (name, email) VALUES (?, ?)`, [name, email]
+            `INSERT INTO ${process.env.DB_TABLENAME} (name, email, cep, logradouro, bairro, cidade, estado, numero) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
+            [name, email, cep, logradouro, bairro, cidade, estado, numero]
         );
-        res.status(201).json({ id: insertResults.insertId, name, email });
+        res.status(201).json({ id: insertResults.insertId, name, email, cep, logradouro, bairro, cidade, estado, numero });
     } catch (error) {
         console.error("Erro ao inserir dados:", error);
         res.status(500).send("Erro interno do servidor");
@@ -32,8 +34,9 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
-    const { id, name, email } = req.body;
-    if (!id || !name || !email) return res.status(400).send("Todos os campos são obrigatórios");
+    const { id, name, email, cep, logradouro, bairro, cidade, estado, numero } = req.body;
+    if (!id || !name || !email || !cep || !logradouro || !bairro || !cidade || !estado || !numero)
+        return res.status(400).send("Todos os campos são obrigatórios");
 
     try {
         const [[{ count }]] = await req.pool.query(
@@ -42,9 +45,10 @@ router.put("/", async (req, res) => {
         if (count === 0) return res.status(404).send("Usuário não encontrado");
 
         await req.pool.query(
-            `UPDATE ${process.env.DB_TABLENAME} SET name = ?, email = ? WHERE id = ?`, [name, email, id]
+            `UPDATE ${process.env.DB_TABLENAME} SET name = ?, email = ?, cep = ?, logradouro = ?, bairro = ?, cidade = ?, estado = ?, numero = ? WHERE id = ?`, 
+            [name, email, cep, logradouro, bairro, cidade, estado, numero, id]
         );
-        res.status(200).json({ id, name, email });
+        res.status(200).json({ id, name, email, cep, logradouro, bairro, cidade, estado, numero });
     } catch (error) {
         console.error("Erro ao atualizar dados:", error);
         res.status(500).send("Erro interno do servidor");

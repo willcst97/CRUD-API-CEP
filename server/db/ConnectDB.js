@@ -34,6 +34,12 @@ const ConnectDB = async () => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(50) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
+        cep VARCHAR(8) NOT NULL,
+        logradouro VARCHAR(100) NOT NULL,
+        bairro VARCHAR(50) NOT NULL,
+        cidade VARCHAR(50) NOT NULL,
+        estado VARCHAR(2) NOT NULL,
+        numero VARCHAR(10) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
