@@ -1,8 +1,11 @@
+// Importando hooks do React e outras bibliotecas necessárias
 import { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 
+// Definição do componente funcional CreateUserModal que recebe addUser como prop
 function CreateUserModal({ addUser }) {
+  // Definindo estados para armazenar os valores dos campos do formulário
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [cep, setCep] = useState("");
@@ -12,45 +15,60 @@ function CreateUserModal({ addUser }) {
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
 
+  // Funções para atualizar os estados conforme os valores dos campos do formulário mudam
   const handleNameChange = (event) => setName(event.target.value);
   const handleEmailChange = (event) => setEmail(event.target.value);
+
+  // Função para atualizar o estado do CEP e buscar os dados de endereço automaticamente
   const handleCepChange = async (event) => {
     const newCep = event.target.value;
     setCep(newCep);
 
+    // Verifica se o CEP tem 8 dígitos
     if (newCep.length === 8) {
       try {
+        // Faz uma requisição GET para a API ViaCEP para buscar o endereço pelo CEP
         const res = await axios.get(`https://viacep.com.br/ws/${newCep}/json/`);
+        // Atualiza os estados com os valores obtidos da API
         setLogradouro(res.data.logradouro);
         setBairro(res.data.bairro);
         setCidade(res.data.localidade);
         setEstado(res.data.uf);
+        // Move o foco para o campo de número
         document.getElementById("numero").focus();
       } catch (error) {
+        // Exibe uma mensagem de erro em caso de falha na busca
         toast.error("Erro ao buscar endereço");
       }
     }
   };
+
   const handleLogradouroChange = (event) => setLogradouro(event.target.value);
   const handleBairroChange = (event) => setBairro(event.target.value);
   const handleCidadeChange = (event) => setCidade(event.target.value);
   const handleEstadoChange = (event) => setEstado(event.target.value);
   const handleNumeroChange = (event) => setNumero(event.target.value);
 
+  // Função para lidar com a criação do usuário
   const handleCreateUser = async () => {
+    // Verifica se todos os campos são obrigatórios estão preenchidos
     if (!name || !email || !cep || !logradouro || !bairro || !cidade || !estado || !numero) {
       toast.error("Todos os campos são obrigatórios");
       return;
     }
 
     try {
+      // Faz uma requisição POST para criar o usuário no servidor
       const res = await axios.post("http://localhost:3000/", {
         name, email, cep, logradouro, bairro, cidade, estado, numero
       });
 
+      // Verifica se a requisição foi bem-sucedida
       if (res.status === 201) {
         toast.success("Usuário criado com sucesso");
+        // Adiciona o novo usuário ao estado de usuários
         addUser(res.data);
+        // Limpa os campos do formulário
         setName("");
         setEmail("");
         setCep("");
@@ -61,11 +79,13 @@ function CreateUserModal({ addUser }) {
         setNumero("");
       }
     } catch (error) {
+      // Exibe uma mensagem de erro em caso de falha na criação do usuário
       console.error("Erro ao criar usuário: ", error);
       toast.error("Erro ao criar usuário");
     }
   };
 
+  // Renderizando o modal de criação de usuário
   return (
     <>
       <button type="button" className="btn btn-success" data-bs-toggle="modal" id="button" data-bs-target="#CreateUserModal">
@@ -123,4 +143,5 @@ function CreateUserModal({ addUser }) {
   );
 }
 
+// Exportando o componente para ser usado em outros arquivos
 export default CreateUserModal;

@@ -1,0 +1,19 @@
+'npm start' na pasta server
+'npm run dev' na pasta frontend
+
+schema para popular banco de dados:
+INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
+VALUES ('Maria Silva', 'maria.silva@example.com', '01001000', 'Praça da Sé', 'Sé', 'São Paulo', 'SP', '123');
+
+INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
+VALUES ('João Souza', 'joao.souza@example.com', '30140071', 'Avenida Afonso Pena', 'Centro', 'Belo Horizonte', 'MG', '456');
+
+INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
+VALUES ('Ana Pereira', 'ana.pereira@example.com', '20040007', 'Rua do Ouvidor', 'Centro', 'Rio de Janeiro', 'RJ', '789');
+
+INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
+VALUES ('Carlos Oliveira', 'carlos.oliveira@example.com', '40020000', 'Avenida Sete de Setembro', 'Pelourinho', 'Salvador', 'BA', '1011');
+
+INSERT INTO users (name, email, cep, logradouro, bairro, cidade, estado, numero)
+VALUES ('Fernanda Costa', 'fernanda.costa@example.com', '80010000', 'Rua XV de Novembro', 'Centro', 'Curitiba', 'PR', '1213');
+ 

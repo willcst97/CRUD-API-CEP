@@ -1,52 +1,68 @@
+// Importando hooks do React e outras bibliotecas necessárias
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 
+// Definição do componente funcional DeleteUserModal
 function DeleteUserModal() {
+  // Definindo estados para armazenar o ID e os dados do usuário
   const [id, setId] = useState("");
   const [user, setUser] = useState(null);
 
+  // Função para lidar com a mudança do campo ID e buscar os dados do usuário
   const handleIdChange = async (event) => {
     const userId = event.target.value;
     setId(userId);
 
+    // Verifica se um ID foi digitado
     if (userId) {
       try {
+        // Faz uma requisição GET para buscar os dados do usuário pelo ID
         const res = await axios.get(`http://localhost:3000/${userId}`);
         const userData = res.data;
+        // Se os dados do usuário foram encontrados, atualiza o estado do usuário
         if (userData) {
           setUser(userData);
         }
       } catch (error) {
+        // Exibe uma mensagem de erro em caso de falha na busca dos dados do usuário
         toast.error("Erro ao buscar dados do usuário");
         setUser(null);
       }
     }
   };
 
+  // Função para lidar com a exclusão do usuário
   const handleDeleteUser = async () => {
+    // Verifica se um ID foi digitado
     if (!id) {
       toast.error("ID é obrigatório");
       return;
     }
     try {
+      // Faz uma requisição DELETE para excluir o usuário pelo ID
       const res = await axios.delete("http://localhost:3000", { data: { id } });
 
+      // Verifica se a exclusão foi bem-sucedida
       if (res.status === 200) {
         toast.success(`Usuário com ID ${id} removido com sucesso`);
+        // Limpa o estado do ID e do usuário
         setId("");
         setUser(null);
 
+        // Recarrega a página após 3 segundos
         setTimeout(() => {
           location.reload();
         }, 3000);
       }
     } catch (error) {
+      // Exibe uma mensagem de erro em caso de falha na exclusão do usuário
       console.error("Erro ao deletar usuário", error);
       toast.error("Erro ao deletar usuário");
     }
   };
 
+  // Renderizando o modal de exclusão de usuário
   return (
     <>
       <button type="button" className="btn btn-danger" data-bs-toggle="modal" id="button" data-bs-target="#DeleteUserModal">
@@ -90,5 +106,5 @@ function DeleteUserModal() {
   );
 }
 
-// exportando a função criada
+// Exportando o componente para ser usado em outros arquivos
 export default DeleteUserModal;
